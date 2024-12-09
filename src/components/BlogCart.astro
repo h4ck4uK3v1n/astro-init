@@ -1,0 +1,37 @@
+---
+const { frontmatter, url } = Astro.props;
+---
+
+<div class="mb-6">
+  <a
+    href={url}
+    class="block overflow-hidden rounded-lg bg-[var(--gray-999)] backdrop-blur-md shadow-2xl shadow-[var(--accent-light))] border-2 border-[var(--accent-light)] transition-all hover:shadow-xl"
+  >
+    <article class="flex flex-col h-full">
+      <div class="relative h-48 w-full sm:h-64">
+        <img
+          src={frontmatter.image.url}
+          alt={frontmatter.image.alt}
+          class="object-cover z-0 w-full h-full"
+        />
+      </div>
+      <div class="flex flex-col flex-grow p-6">
+        <h2 class="mb-2 text-xl font-bold text-[var(--gray-500)] sm:text-2xl">
+          {frontmatter.title}
+        </h2>
+        <p class="mb-4 flex-grow text-gray-600">
+          {frontmatter.description}
+        </p>
+        <time class="text-sm text-gray-500">
+          {
+            new Date(frontmatter.pubDate).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })
+          }
+        </time>
+      </div>
+    </article>
+  </a>
+</div>

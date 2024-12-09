@@ -1,0 +1,41 @@
+---
+import BlogCart from "../components/BlogCart.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+export interface BlogPost {
+  frontmatter: {
+    title: string;
+    author: string;
+    description: string;
+    image: {
+      url: string;
+      alt: string;
+    };
+    pubDate: string; // ISO 8601 date string
+    tags: string[];
+  };
+  file: string; // Path to the file
+  url: string; // Relative URL
+}
+const allPost = Object.values(
+  import.meta.glob("./posts/*.md", { eager: true })
+) as BlogPost[];
+
+---
+
+<BaseLayout title="Blog">
+  <div class="container mx-auto">
+    <h1>Blog</h1>
+    <p>
+      Welcome to my blog! Here, I'll be sharing my thoughts on a variety of
+      topics. Check back often to see what's new!
+    </p>
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 items-stretch">
+      {
+        allPost.map(({ frontmatter, url }: BlogPost) => (
+          <BlogCart frontmatter={frontmatter} url={url} />
+        ))
+      }
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,53 @@
+---
+import type { GetStaticPaths } from "astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import type { BlogPost } from "../blog.astro";
+import BlogCart from "../../components/BlogCart.astro";
+import Title from "../../components/Title.astro";
+export async function getStaticPaths() {
+  const allPost = Object.values(
+    await import.meta.glob("../posts/*.md", { eager: true })
+  ) as BlogPost[];
+
+  const uniqueTags = [
+    ...new Set(allPost.map((post: BlogPost) => post.frontmatter.tags).flat()),
+  ];
+  return uniqueTags.map((tag) => {
+    const filteredPosts = allPost.filter((post: BlogPost) => {
+      return post.frontmatter.tags.includes(tag);
+    }) as BlogPost[];
+
+    return {
+      params: {
+        tag,
+      },
+      props: {
+        posts: filteredPosts,
+      },
+    };
+  });
+}
+
+const { tag } = Astro.params;
+const { posts } = Astro.props;
+---
+
+<BaseLayout title={tag}>
+  <div class="container mx-auto">
+    <Title size="default" color="accent" class="text-center uppercase">
+      Here are all the posts tagged with {" "}
+      <span
+        class="bg-clip-text text-transparent bg-gradient-to-r from-sky-800 to-blue-800"
+      >
+        {tag}
+      </span>
+    </Title>
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 items-stretch">
+      {
+        posts.map(({ frontmatter, url }: BlogPost) => (
+          <BlogCart frontmatter={frontmatter} url={url} />
+        ))
+      }
+    </div>
+  </div>
+</BaseLayout>

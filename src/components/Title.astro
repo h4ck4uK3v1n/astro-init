@@ -1,0 +1,61 @@
+---
+import { cva, type VariantProps } from "class-variance-authority";
+import { twMerge } from "tailwind-merge";
+
+export interface Props extends VariantProps<typeof titleVariants> {
+  as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+  class?: string;
+}
+
+const titleVariants = cva("font-bold leading-tight tracking-tighter", {
+  variants: {
+    size: {
+      default: "text-4xl",
+      lg: "text-lg",
+      sm: "text-sm",
+    },
+    color: {
+      default: "text-gray-900 dark:text-gray-100",
+      primary: "text-primary-600 dark:text-primary-400",
+      secondary: "text-secondary-600 dark:text-secondary-400",
+      accent: "text-accent-600 dark:text-accent-400",
+    },
+    alignment: {
+      left: "text-left",
+      center: "text-center",
+      right: "text-right",
+    },
+    decoration: {
+      none: "",
+      underline: "underline underline-offset-4",
+      overline: "border-t-4 pt-2",
+      "through-line": "line-through",
+    },
+  },
+  defaultVariants: {
+    size: "default",
+    color: "default",
+    alignment: "left",
+    decoration: "none",
+  },
+});
+
+const {
+  as: Element = "h1",
+  size,
+  color,
+  alignment,
+  decoration,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const classes = twMerge(
+  titleVariants({ size, color, alignment, decoration }),
+  className
+);
+---
+
+<Element class={`${classes} my-4`} {...rest}>
+  <slot />
+</Element>
