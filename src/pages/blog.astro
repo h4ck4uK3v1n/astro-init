@@ -1,5 +1,7 @@
 ---
 import BlogCart from "../components/BlogCart.astro";
+import Header from "../components/shared/Header.astro";
+import Tag from "../components/Tag.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 export interface BlogPost {
@@ -21,15 +23,45 @@ const allPost = Object.values(
   import.meta.glob("./posts/*.md", { eager: true })
 ) as BlogPost[];
 
+const tags = [
+  ...new Set(allPost.map((post: BlogPost) => post.frontmatter.tags).flat()),
+];
+
+const pageTitle = "Blog";
+
+const colors = [
+  { color: "bg-blue-300" },
+  { color: "bg-yellow-400" },
+  { color: "bg-green-400" },
+  { color: "bg-purple-200" },
+  { color: "bg-amber-300" },
+  { color: "bg-white" },
+  { color: "bg-emerald-300" },
+  { color: "bg-pink-300" },
+];
 ---
 
-<BaseLayout title="Blog">
+<BaseLayout title={pageTitle}>
   <div class="container mx-auto">
     <h1>Blog</h1>
     <p>
       Welcome to my blog! Here, I'll be sharing my thoughts on a variety of
       topics. Check back often to see what's new!
     </p>
+    <Header>
+      <div
+        class="flex md:justify-between justify-center items-center flex-wrap gap-2"
+      >
+        {
+          tags.map((tag) => {
+            const randomColor =
+              colors[Math.floor(Math.random() * colors.length)].color;
+            return <Tag name={tag} color={randomColor} />;
+          })
+        }
+      </div>
+    </Header>
+    
     <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 items-stretch">
       {
         allPost.map(({ frontmatter, url }: BlogPost) => (

@@ -1,0 +1,10 @@
+---
+const { color, name } = Astro.props;
+---
+
+<a
+    href={`/tags/${name}`}
+  class={`rounded-full ${color} px-4 py-1 text-sm font-medium text-blue-900 transition-transform hover:scale-105`}
+>
+  {name}
+</a>
