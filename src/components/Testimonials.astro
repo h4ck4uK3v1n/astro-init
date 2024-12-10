@@ -1,5 +1,4 @@
 ---
-import { date, nan } from "astro:schema";
 import Testimonial from "./Testimonial.astro";
 
 import { API_STRAPI_URL, IMAGE_STRAPI_URL } from "astro:env/server";
@@ -69,9 +68,8 @@ export interface ResData {
 
 const data = await fetch(`${API_STRAPI_URL}testimonials?populate=*`);
 
-const { data: testimonials, meta } = (await data.json()) as ResData;
+const { data: testimonials } = (await data.json()) as ResData;
 
-const total = meta.pagination.total;
 ---
 
 <section class="">
@@ -107,7 +105,7 @@ const total = meta.pagination.total;
         class="relative flex w-full md:h-[70vh] h-auto gap-6 pb-3 px-14 z-20 snap-x overflow-x-hidden overflow-y-auto mt-8"
         id="container"
       >
-        {
+        { testimonials &&
           testimonials.map(({ name, role, image, quote }) => {
             const imageUrl = `${IMAGE_STRAPI_URL}${image.url}`;
             return (

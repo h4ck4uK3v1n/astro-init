@@ -1,35 +1,10 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Testimonials from "../components/Testimonials.astro";
-export function getStaticPaths() {
-  return [
-    {
-      params: {
-        page: "1",
-      },
-    },
-    {
-      params: {
-        pageSize: "1",
-      },
-    },
-  ];
-}
 ---
 
 <BaseLayout>
   <main class="relative">
-    <!-- <div
-      class="absolute top-0 left-0 right-0 bottom-0 w-full h-full content-[''] z-10 pointer-events-none opacity-[var(--opacity)]"
-    >
-      <Image
-        src="/assets/backgrounds/blackhole.gif"
-        alt="Black hole background"
-        layout="fill"
-        objectFit="cover"
-        quality={100}
-      />
-    </div> -->
     <div
       class="absolute top-0 left-0 right-0 bottom-0 w-full h-full content-[''] z-10 pointer-events-none bg-[url('/assets/backgrounds/blackhole.gif')] object-cover bg-center opacity-[var(--opacity)]"
     >
