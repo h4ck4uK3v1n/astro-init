@@ -18,9 +18,16 @@ const { title, description } = Astro.props;
 <html lang="en">
   <head>
     <MainHead title={title} description={description} />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"
+    ></script>
   </head>
   <body>
-    <div class="stack backgrounds" style="display: grid; min-height: 100dvh; grid-template-rows: auto 1fr auto;">
+    <div
+      class="stack backgrounds"
+      style="display: grid; min-height: 100dvh; grid-template-rows: auto 1fr auto;"
+    >
       <Nav />
       <slot />
       <Footer />

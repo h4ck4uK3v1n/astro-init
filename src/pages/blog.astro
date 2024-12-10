@@ -29,7 +29,7 @@ const tags = [
 
 const pageTitle = "Blog";
 
-const colors = [
+export const colors = [
   { color: "bg-blue-300" },
   { color: "bg-yellow-400" },
   { color: "bg-green-400" },
@@ -61,7 +61,7 @@ const colors = [
         }
       </div>
     </Header>
-    
+
     <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 items-stretch">
       {
         allPost.map(({ frontmatter, url }: BlogPost) => (

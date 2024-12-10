@@ -1,21 +1,227 @@
 ---
+import { date, nan } from "astro:schema";
 import Testimonial from "./Testimonial.astro";
+
+import { API_STRAPI_URL, IMAGE_STRAPI_URL } from "astro:env/server";
+
+export interface ImageFormat {
+  ext: string;
+  url: string;
+  hash: string;
+  mime: string;
+  name: string;
+  path: string | null;
+  size: number;
+  width: number;
+  height: number;
+  sizeInBytes: number;
+}
+
+export interface ImageProps {
+  id: number;
+  documentId: string;
+  name: string;
+  alternativeText: string | null;
+  caption: string | null;
+  width: number;
+  height: number;
+  formats: {
+    small: ImageFormat;
+    medium: ImageFormat;
+    thumbnail: ImageFormat;
+  };
+  hash: string;
+  ext: string;
+  mime: string;
+  size: number;
+  url: string;
+  previewUrl: string | null;
+  provider: string;
+  provider_metadata: any | null;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+}
+
+export interface TestimonialProps {
+  id: number;
+  documentId: string;
+  name: string;
+  role: string;
+  quote: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  image: ImageProps;
+}
+
+export interface ResData {
+  data: TestimonialProps[];
+  meta: {
+    pagination: {
+      page: number;
+      pageSize: number;
+      pageCount: number;
+      total: number;
+    };
+  };
+}
+
+const data = await fetch(`${API_STRAPI_URL}testimonials?populate=*`);
+
+const { data: testimonials, meta } = (await data.json()) as ResData;
+
+const total = meta.pagination.total;
 ---
 
 <section class="">
-  <div class="max-w-6xl px-6 py-10 mx-auto">
-    <p class="text-xl font-medium text-blue-500">Testimonials</p>
+  <div class="container py-10 mx-auto">
+    <p class="text-xl font-medium text-[var(--accent-dark)]">Testimonials</p>
 
-    <h1
-      class="mt-2 text-2xl font-semibold text-gray-800 capitalize lg:text-3xl dark:text-white"
-    >
-      What clients saying
+    <h1 class="mt-2 text-2xl font-semibold capitalize lg:text-3xl">
+      What Our Clients Say
     </h1>
 
-    <main class="relative z-20 w-full mt-8 md:flex md:items-center xl:mt-12">
-      <div class="absolute w-full bg-blue-600 -z-10 md:h-96 rounded-2xl"></div>
+    <div class="flex md:flex-row flex-col justify-evenly items-center">
+      <button
+        id="prev"
+        title="left arrow"
+        class="p-2 transition-colors duration-300 border rounded-full rtl:-scale-x-100 hover:bg-blue-400 md:block hidden"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-6 h-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15 19l-7-7 7-7"></path>
+        </svg>
+      </button>
 
-      <Testimonial />
-    </main>
+      <main
+        class="relative flex w-full md:h-[70vh] h-auto gap-6 pb-3 px-14 z-20 snap-x overflow-x-hidden overflow-y-auto mt-8"
+        id="container"
+      >
+        {
+          testimonials.map(({ name, role, image, quote }) => {
+            const imageUrl = `${IMAGE_STRAPI_URL}${image.url}`;
+            return (
+              <Testimonial
+                name={name}
+                role={role}
+                image={imageUrl}
+                quote={quote}
+              />
+            );
+          })
+        }
+      </main>
+
+      <button
+        id="next"
+        title="right arrow"
+        class="p-2 transition-colors duration-300 border rounded-full rtl:-scale-x-100 md:mx-6 hover:bg-blue-400 md:block hidden"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-6 h-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"
+          ></path>
+        </svg>
+      </button>
+
+      <div class="flex justify-evenly items-center md:hidden">
+        <button
+          id="prev"
+          title="left arrow"
+          class="p-2 transition-colors duration-300 border rounded-full rtl:-scale-x-100 hover:bg-blue-400"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-6 h-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </button>
+
+        <button
+          id="next"
+          title="right arrow"
+          class="p-2 transition-colors duration-300 border rounded-full rtl:-scale-x-100 md:mx-6 hover:bg-blue-400"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-6 h-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 5l7 7-7 7"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
   </div>
 </section>
+
+<script>
+  const prev = document.getElementById("prev") as HTMLButtonElement;
+  const next = document.getElementById("next") as HTMLButtonElement;
+  const container = document.getElementById("container") as HTMLDivElement;
+  let scrollAmount = 0;
+
+  next.addEventListener("click", () => {
+    const width = container.scrollWidth;
+    const windowWidth = container.clientWidth;
+
+    if (scrollAmount < width - windowWidth) {
+      scrollAmount += windowWidth;
+      container.scrollTo({
+        top: 0,
+        left: scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  });
+
+  prev.addEventListener("click", () => {
+    const windowWidth = container.clientWidth;
+
+    if (scrollAmount > 0) {
+      scrollAmount -= windowWidth;
+      container.scrollTo({
+        top: 0,
+        left: scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  });
+</script>
+
+<style>
+  .scroll-none {
+    scroll-snap-type: none;
+    scrollbar-width: none;
+  }
+</style>

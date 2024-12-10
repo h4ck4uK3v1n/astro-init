@@ -1,4 +1,6 @@
 ---
+import { colors } from "../pages/blog.astro";
+
 export interface TestimonialProps {
   name: string;
   role: string;
@@ -6,75 +8,50 @@ export interface TestimonialProps {
   image: string;
 }
 
-let { name, role, quote, image } = Astro.props;
+let { name, role, quote, image } = Astro.props as TestimonialProps;
 if (!name || !role || !quote || !image) {
   name = "Ema Watson";
   role = "Marketing Manager at Stech";
   quote =
     "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore quibusdam ducimus libero ad tempora doloribus expedita laborum saepe voluptas perferendis delectus assumenda";
-    image = "https://images.unsplash.com/photo-1488508872907-592763824245?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80";7
+  image =
+    "https://images.unsplash.com/photo-1488508872907-592763824245?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80";
+  7;
 }
+
+const randomColor = colors[Math.floor(Math.random() * colors.length)].color;
 ---
 
 <div
-  class="w-full p-6 bg-blue-600 md:flex md:items-center rounded-2xl md:bg-transparent md:p-0 lg:px-12 md:justify-evenly"
+  class="relative snap-center shrink-0 w-full md:flex md:items-center rounded-2xl md:bg-transparent md:justify-evenly"
 >
+  <div
+    class="absolute w-full -z-10 md:h-96 bg-[linear-gradient(to_right,var(--accent-dark)_1px,transparent_1px),linear-gradient(to_bottom,var(--accent-dark)_1px,transparent_1px)] bg-[size:35px_34px] [mask-image:radial-gradient(ellipse_80%_100%_at_50%_0%,#000_70%,transparent_100%)] bg-[var(--accent-dark)]/10 rounded-2xl"
+  >
+  </div>
+  <!-- <div class="absolute w-full bg-blue-600 -z-10 md:h-96 rounded-2xl"></div> -->
   <img
-    class="h-24 w-24 md:mx-6 rounded-full object-cover shadow-md md:h-[32rem] md:w-80 lg:h-[36rem] lg:w-[26rem] md:rounded-2xl"
+    class="h-24 w-24 md:mx-6 rounded-full object-cover md:h-[32rem] md:w-80 lg:h-[36rem] lg:w-[26rem] md:rounded-2xl shadow-xl shadow-[var(--accent-dark)]"
     src={image}
     alt="client photo"
   />
 
-  <div class="mt-2 md:mx-6">
+  <div
+    class="space-y-6 mt-2 md:mx-6 backdrop-blur-2xl bg-[var(--accent-dark)]/25 border-2 border-[var(--accent-dark)] p-2 rounded-lg"
+  >
     <div>
-      <p class="text-xl font-medium tracking-tight text-white">
+      <p class="text-xl font-medium tracking-tight">
         {name}
       </p>
-      <p class="text-blue-200">
+      <p
+        class={`${randomColor} w-fit px-4 py-1 text-sm font-medium text-blue-900 transition-transform hover:scale-105 rounded-lg`}
+      >
         {role}
       </p>
     </div>
 
-    <p class="mt-4 text-lg leading-relaxed text-white md:text-xl">
-      “{quote}”.
+    <p class="mt-4 text-sm font-medium leading-relaxed md:text-lg">
+      “{quote}”
     </p>
-
-    <div class="flex items-center justify-between mt-6 md:justify-start">
-      <button
-        title="left arrow"
-        class="p-2 text-white transition-colors duration-300 border rounded-full rtl:-scale-x-100 hover:bg-blue-400"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-6 h-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M15 19l-7-7 7-7"></path>
-        </svg>
-      </button>
-
-      <button
-        title="right arrow"
-        class="p-2 text-white transition-colors duration-300 border rounded-full rtl:-scale-x-100 md:mx-6 hover:bg-blue-400"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-6 h-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"
-          ></path>
-        </svg>
-      </button>
-    </div>
   </div>
 </div>
